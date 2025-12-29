@@ -1,6 +1,6 @@
 {
   "pack": {
-    "description": "teamlapenfaction2luckpermsgroup resources",
-    "pack_format": 15
+    "description": "${mod_id} resources",
+    "pack_format": 34
   }
 }

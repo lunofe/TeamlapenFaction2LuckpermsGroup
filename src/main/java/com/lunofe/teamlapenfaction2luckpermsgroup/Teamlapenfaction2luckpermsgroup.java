@@ -2,11 +2,13 @@ package com.lunofe.teamlapenfaction2luckpermsgroup;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -16,7 +18,7 @@ public class Teamlapenfaction2luckpermsgroup {
     public static final String MODID = "teamlapenfaction2luckpermsgroup";
 
     public Teamlapenfaction2luckpermsgroup() {
-        MinecraftForge.EVENT_BUS.addListener(this::onPlayerLoggedIn);
+        NeoForge.EVENT_BUS.addListener(this::onPlayerLoggedIn);
     }
 
     public void onPlayerLoggedIn(PlayerEvent.@NotNull PlayerLoggedInEvent event) {
@@ -34,17 +36,22 @@ public class Teamlapenfaction2luckpermsgroup {
 
                 // extract levels
                 String factionData = "";
-                int levelData = 0, lordData = 0;
+                int levelData = 0, lordData = 0, aegingData = 0;
+
                 try {
-                    factionData = playerData.getCompound("ForgeCaps").getCompound("vampirism:ifactionplayerhandler").getString("faction");
+                    if (playerData.contains("neoforge:attachments")) {
+                        CompoundTag attachments = playerData.getCompound("neoforge:attachments");
+                        if (attachments.contains("vampirism:faction_player_handler")) {
+                            CompoundTag vampirismData = attachments.getCompound("vampirism:faction_player_handler");
+                            factionData = vampirismData.getString("faction");
+                            levelData = vampirismData.getInt("level");
+                            lordData = vampirismData.getInt("lord_level");
+                        }
+                        if (attachments.contains("vampiricageing:ageing")) {
+                            aegingData = attachments.getCompound("vampiricageing:ageing").getInt("age");
+                        }
+                    }
                 } catch (Exception ignored) { }
-                try {
-                    levelData = playerData.getCompound("ForgeCaps").getCompound("vampirism:ifactionplayerhandler").getInt("level");
-                } catch (Exception ignored) { }
-                try {
-                    lordData = playerData.getCompound("ForgeCaps").getCompound("vampirism:ifactionplayerhandler").getInt("lord_level");
-                } catch (Exception ignored) { }
-                int aegingData = playerData.getCompound("ForgeCaps").getCompound("vampiricageing:ageing").getInt("age");
 
                 // map faction and color
                 String faction;
