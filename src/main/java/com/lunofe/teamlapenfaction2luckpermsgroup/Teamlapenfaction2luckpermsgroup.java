@@ -47,8 +47,8 @@ public class Teamlapenfaction2luckpermsgroup {
                             levelData = vampirismData.getInt("level");
                             lordData = vampirismData.getInt("lord_level");
                         }
-                        if (attachments.contains("vampiricageing:ageing")) {
-                            aegingData = attachments.getCompound("vampiricageing:ageing").getInt("age");
+                        if (attachments.contains("vampiricageing:ageing_manager")) {
+                            aegingData = attachments.getCompound("vampiricageing:ageing_manager").getInt("ageing_rank");
                         }
                     }
                 } catch (Exception ignored) { }
